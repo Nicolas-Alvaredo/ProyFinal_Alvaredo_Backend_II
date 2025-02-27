@@ -50,5 +50,5 @@ npm install
 ## 🛠️ Ejecución
 
 ```bash
-   npm start
+npm start
 ```
