@@ -8,8 +8,8 @@ Este proyecto es una API desarrollada en **Node.js** y **Express** que permite g
 
 - **Crear productos**: Se pueden agregar productos con los siguientes campos:
   - `title`, `description`, `price`, `thumbnails`, `code`, `stock`, `category`, `status`.
-- **Obtener productos**: Listar todos los productos con paginación, filtros y ordenamientos por precio.
-- **Buscar productos**: Filtrar por categoría o disponibilidad.
+- **Obtener productos**: Listar todos los productos con paginación (`limit`, `page`), filtros y ordenamientos por precio (`sort=asc`, `sort=desc`).
+- **Buscar productos**: Filtrar por categoría (`query=Periféricos`).
 - **Actualizar productos**: Modificar cualquier campo excepto el `id`.
 - **Eliminar productos**: Eliminar un producto existente.
 
