@@ -76,6 +76,10 @@ npm install
 ### ▶️ Ejecutar el servidor
 
 ```bash
+npm run dev
+```
+
+```bash
 npm start
 ```
 
