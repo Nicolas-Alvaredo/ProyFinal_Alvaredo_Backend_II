@@ -1,9 +1,12 @@
 /* Estilos generales */
-body {
+html, body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    min-height: 100vh; /* Hace que el contenido mínimo sea la altura de la ventana */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header */
@@ -17,6 +20,7 @@ header {
 
 /* Contenedor principal */
 main {
+    flex: 1; /* Permite que el contenido principal crezca y ocupe espacio */
     padding: 20px;
     text-align: center;
 }
@@ -51,51 +55,11 @@ main {
     font-size: 14px;
 }
 
-/* Formulario de productos */
-.product-form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.product-form input {
+/* Paginación */
+.pagination {
+    margin-top: auto; /* Empuja la paginación hacia el final del contenido */
+    text-align: center;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 150px;
-}
-
-.product-form button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px;
-}
-
-.product-form button:hover {
-    background-color: #218838;
-}
-
-/* Botón eliminar */
-button.eliminar {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-button.eliminar:hover {
-    background-color: #c82333;
 }
 
 /* Footer */
@@ -104,7 +68,6 @@ footer {
     background-color: #333;
     color: white;
     padding: 10px;
-    position: absolute;
     width: 100%;
-    bottom: 0;
+    position: relative; /* Cambiado de fixed a relative */
 }

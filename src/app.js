@@ -1,25 +1,35 @@
+import dotenv from "dotenv";
+dotenv.config(); // 🔥 Asegura que las variables de entorno se carguen antes de usarlas
 import express from "express";
 import exphbs from "express-handlebars";
+import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
+import Handlebars from "handlebars";
 import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
-import createProductRouter from "./routes/products.router.js";
+import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import ProductManager from "./managers/productManager.js";
-import CartManager from "./managers/cartManager.js";
+import Product from "./models/Product.js";
+import connectDB from "./config/db.js"; // Conexión a MongoDB
 
-// Obtener la ruta del directorio actual
+// Conectar a MongoDB
+connectDB();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Crear instancias de los Managers con rutas de archivos JSON
-const productManager = new ProductManager(path.join(__dirname, "data/products.json"));
-const cartManager = new CartManager(path.join(__dirname, "data/carts.json"));
+// Configuración de Handlebars con acceso a prototipos
+const hbs = exphbs.create({
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    }
+});
 
-// Configuración del servidor
 const app = express();
-app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
@@ -34,17 +44,53 @@ const httpServer = app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en: http://localhost:${PORT}`);
 });
 
-// Configuración de WebSockets con Socket.io
-const io = new Server(httpServer);
 
-// WebSockets solo registra conexiones (lógica movida a las rutas)
-io.on("connection", (socket) => {
-    console.log("Cliente conectado vía WebSockets");
+// 🔹 Configuración de WebSockets con Socket.io
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+app.set("io", io);
+
+// ✅ Middleware para compartir `io` con los routers
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
+// ✅ WebSockets: solo una conexión por cliente
+io.on("connection", async (socket) => {
+    if (!socket.handshake.headers.referer?.includes("/products")) {
+        return;
+    }
+
+    console.log("🟢 Cliente conectado en /products vía WebSockets");
+
+    try {
+        const productos = await Product.find();
+        socket.emit("productosActualizados", productos);
+    } catch (error) {
+        console.error("❌ Error al obtener productos:", error);
+    }
+
+    socket.on("productosActualizados", async () => {
+        try {
+            const productos = await Product.find();
+            io.emit("productosActualizados", productos);
+        } catch (error) {
+            console.error("❌ Error al actualizar productos:", error);
+        }
+    });
+
+    // 🔹 No desconectar al cambiar de página dentro del sitio
+    socket.on("disconnecting", () => {
+        console.log("🔴 Cliente desconectando...");
+    });
 });
 
 // Rutas
-app.use("/api/products", createProductRouter(io)); // Pasamos `io`
+app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
-
-export { productManager, cartManager };

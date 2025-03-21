@@ -1,57 +1,39 @@
 import express from "express";
-import CartManager from "../managers/cartManager.js";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Obtener `__dirname` en ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {
+    createCart,
+    getCartById,
+    addProductToCart,
+    removeProductFromCart,
+    updateCart,
+    updateProductQuantity,
+    clearCart,
+    getAllCarts 
+} from "../controllers/cart.controller.js";
 
 const router = express.Router();
-const cartManager = new CartManager(path.join(__dirname, "../data/carts.json"));
 
-// Crear un nuevo carrito
-router.post('/', async (req, res) => {
-    try {
-        const newCart = await cartManager.createCart();
-        res.status(201).json(newCart);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// ✅ CREAR UN NUEVO CARRITO VACÍO
+router.post("/", createCart);
 
-// Obtener un carrito por ID
-router.get('/:cid', async (req, res) => {
-    try {
-        const cart = await cartManager.getCartById(req.params.cid);
-        res.status(200).json(cart);
-    } catch (error) {
-        res.status(404).json({ error: error.message });
-    }
-});
+// ✅ OBTENER UN CARRITO POR ID (JSON)
+router.get("/:cid", getCartById);
 
-// Agregar un producto al carrito (incrementando cantidad en 1 cada vez)
-router.post('/:cid/product/:pid', async (req, res) => {
-    try {
-        const { cid, pid } = req.params;
-        
-        const updatedCart = await cartManager.addProductToCart(cid, pid);
-        res.status(200).json(updatedCart);
-    } catch (error) {
-        res.status(404).json({ error: error.message });
-    }
-});
+// ✅ OBTENER TODOS LOS CARRITOS (JSON)
+router.get("/", getAllCarts);
 
-// Eliminar un carrito por ID
-router.delete('/:cid', async (req, res) => {
-  try {
-      const { cid } = req.params;
-      const response = await cartManager.deleteCart(cid);
-      res.status(200).json(response);
-  } catch (error) {
-      res.status(404).json({ error: error.message });
-  }
-});
+// ✅ AGREGAR UN PRODUCTO AL CARRITO
+router.post("/:cid/products/:pid", addProductToCart);
+
+// ✅ ELIMINAR UN PRODUCTO DEL CARRITO
+router.delete("/:cid/products/:pid", removeProductFromCart);
+
+// ✅ ACTUALIZAR TODO EL CARRITO CON UN ARRAY NUEVO DE PRODUCTOS
+router.put("/:cid", updateCart);
+
+// ✅ ACTUALIZAR SOLO LA CANTIDAD DE UN PRODUCTO
+router.put("/:cid/products/:pid", updateProductQuantity);
+
+// ✅ VACIAR EL CARRITO COMPLETAMENTE
+router.delete("/:cid", clearCart);
 
 export default router;
-
