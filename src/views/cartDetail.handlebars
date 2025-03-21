@@ -1,38 +1,61 @@
-<h1>Carrito de Compras</h1>
+<div id="cart-container">
+    {{#if cart.products.length}}
+        <ul>
+            {{#each cart.products}}
+            <li id="cart-item-{{this.product._id}}">
+                <div class="cart-item-content">
+                    <strong>{{this.product.title}}</strong> 
+                    <span class="quantity">Cantidad: {{this.quantity}}</span>
+                    <button onclick="removeFromCart('{{../cart._id}}', '{{this.product._id}}')">Eliminar</button>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+        <button onclick="clearCart('{{cart._id}}')" class="vaciar-carrito">🗑️ Vaciar Carrito</button>
+    {{else}}
+        <p>El carrito está vacío.</p>
+    {{/if}}
+</div>
 
-{{#if cart.products.length}}
-    <ul>
-        {{#each cart.products}}
-        <li>
-            <strong>{{this.product.title}}</strong> - Cantidad: {{this.quantity}}
-            <button onclick="removeFromCart('{{../cart._id}}', '{{this.product._id}}')">Eliminar</button>
-        </li>
-        {{/each}}
-    </ul>
 
-    <!-- BOTÓN PARA VACIAR TODO EL CARRITO -->
-    <button onclick="clearCart('{{cart._id}}')" class="vaciar-carrito">🗑️ Vaciar Carrito</button>
-
-{{else}}
-    <p>El carrito está vacío.</p>
-{{/if}}
-
-<!-- BOTÓN PARA VOLVER A PRODUCTOS -->
 <a href="/products">🔙 Volver a Productos</a>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-const socket = io(); // Conexión WebSocket
+const socket = io();
 
-// 🔄 Escuchar eventos de actualización del carrito
+// 🔄 Escuchar eventos de actualización del carrito en tiempo real
 socket.on("carritoActualizado", (cart) => {
     console.log("🛒 Carrito actualizado en tiempo real:", cart);
-    location.reload(); // Recarga la página automáticamente cuando el carrito cambia
+
+    const cartContainer = document.getElementById("cart-container");
+    if (cartContainer) {
+        cartContainer.innerHTML = ""; // Limpiar carrito antes de actualizar
+
+        if (cart.products.length === 0) {
+            cartContainer.innerHTML = "<p>El carrito está vacío.</p>";
+        } else {
+            const ul = document.createElement("ul");
+
+            cart.products.forEach((item) => {
+                const li = document.createElement("li");
+                li.id = `cart-item-${item.product._id}`; // ID único para cada producto
+                li.innerHTML = `
+                    <strong>${item.product.title}</strong> - Cantidad: ${item.quantity}
+                    <button onclick="removeFromCart('${cart._id}', '${item.product._id}')">Eliminar</button>
+                `;
+                ul.appendChild(li);
+            });
+
+            cartContainer.appendChild(ul);
+            cartContainer.innerHTML += `
+                <button onclick="clearCart('${cart._id}')" class="vaciar-carrito">🗑️ Vaciar Carrito</button>
+            `;
+        }
+    }
 });
-</script>
 
-
-<script>
+// ✅ Eliminar producto sin recargar la página
 async function removeFromCart(cartId, productId) {
     try {
         const result = await Swal.fire({
@@ -47,9 +70,7 @@ async function removeFromCart(cartId, productId) {
         });
 
         if (result.isConfirmed) {
-            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
-                method: "DELETE"
-            });
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, { method: "DELETE" });
 
             if (!response.ok) throw new Error("Error al eliminar producto");
 
@@ -58,9 +79,10 @@ async function removeFromCart(cartId, productId) {
                 text: "El producto fue eliminado del carrito.",
                 icon: "success",
                 confirmButtonText: "OK"
-            }).then(() => {
-                location.reload();
             });
+
+            // ✅ Eliminar del DOM sin recargar
+            document.getElementById(`cart-item-${productId}`)?.remove();
         }
     } catch (error) {
         console.error("❌ Error:", error);
@@ -68,6 +90,7 @@ async function removeFromCart(cartId, productId) {
     }
 }
 
+// ✅ Vaciar carrito sin recargar la página
 async function clearCart(cartId) {
     try {
         const result = await Swal.fire({
@@ -82,9 +105,7 @@ async function clearCart(cartId) {
         });
 
         if (result.isConfirmed) {
-            const response = await fetch(`/api/carts/${cartId}`, {
-                method: "DELETE"
-            });
+            const response = await fetch(`/api/carts/${cartId}`, { method: "DELETE" });
 
             if (!response.ok) throw new Error("Error al vaciar el carrito");
 
@@ -93,9 +114,10 @@ async function clearCart(cartId) {
                 text: "Todos los productos fueron eliminados del carrito.",
                 icon: "success",
                 confirmButtonText: "OK"
-            }).then(() => {
-                location.reload();
             });
+
+            // ✅ Vaciar la vista del carrito sin recargar la página
+            document.getElementById("cart-container").innerHTML = "<p>El carrito está vacío.</p>";
         }
     } catch (error) {
         console.error("❌ Error:", error);

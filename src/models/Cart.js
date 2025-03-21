@@ -15,4 +15,3 @@ cartSchema.index({ "products.product": 1 });
 
 const Cart = mongoose.model('Cart', cartSchema);
 export default Cart;
-

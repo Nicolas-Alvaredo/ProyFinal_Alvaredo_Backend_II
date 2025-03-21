@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config(); // 🔥 Asegura que las variables de entorno se carguen antes de usarlas
+dotenv.config(); // Asegura que las variables de entorno se carguen antes de usarlas
 import express from "express";
 import exphbs from "express-handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";

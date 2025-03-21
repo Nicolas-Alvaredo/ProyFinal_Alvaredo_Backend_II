@@ -103,18 +103,32 @@ export const removeProductFromCart = async (req, res) => {
         const cart = await Cart.findById(cid);
         if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
 
+        // Buscar el producto en el carrito
+        const productInCart = cart.products.find(p => p.product.toString() === pid);
+        if (!productInCart) return res.status(404).json({ message: "Producto no encontrado en el carrito" });
+
+        // ✅ **Devolver stock al eliminar**
+        const product = await Product.findById(pid);
+        if (product) {
+            product.stock += productInCart.quantity;
+            await product.save();
+        }
+
+        // ✅ **Eliminar el producto del carrito**
         cart.products = cart.products.filter(p => p.product.toString() !== pid);
         await cart.save();
 
-        // ✅ Emitir actualización al carrito
+        // 🔄 Emitir actualización en tiempo real
+        io.emit("productosActualizados", await Product.find());
         io.emit("carritoActualizado", await Cart.findById(cid).populate("products.product"));
 
-        res.json(cart);
+        res.json({ message: "Producto eliminado del carrito", cart });
     } catch (error) {
         console.error("❌ Error al eliminar producto del carrito:", error);
         res.status(500).json({ message: "Error al eliminar producto del carrito", error });
     }
 };
+
 
 
 
@@ -206,16 +220,27 @@ export const clearCart = async (req, res) => {
         const cart = await Cart.findById(cid);
         if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
 
+        // ✅ **Devolver stock de todos los productos**
+        for (let item of cart.products) {
+            const product = await Product.findById(item.product);
+            if (product) {
+                product.stock += item.quantity;
+                await product.save();
+            }
+        }
+
+        // ✅ **Vaciar el carrito**
         cart.products = [];
         await cart.save();
 
-        // ✅ Emitir evento para actualizar vista del carrito
+        // 🔄 Emitir actualización en tiempo real
+        io.emit("productosActualizados", await Product.find());
         io.emit("carritoActualizado", cart);
 
-        res.json(cart);
+        res.json({ message: "Carrito vaciado correctamente", cart });
     } catch (error) {
         console.error("❌ Error al vaciar el carrito:", error);
-        res.status(500).json({ message: "Error al vaciar el carrito", error });
+        res.status(500).json({ message: "Error al vaciar el carrito.", error });
     }
 };
 

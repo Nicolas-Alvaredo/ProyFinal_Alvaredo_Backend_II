@@ -55,6 +55,87 @@ main {
     font-size: 14px;
 }
 
+/* 🔹 Estilos para el botón "Agregar al carrito" */
+.product-card button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.product-card button:hover {
+    background-color: #218838; /* Verde más oscuro en hover */
+}
+
+
+/* 🔹 Eliminar los bullets de la lista del carrito */
+#cart-container ul {
+    list-style-type: none; /* ❌ Elimina los puntos de la lista */
+    padding: 0; /* Elimina el padding por defecto de la lista */
+}
+
+#cart-container li {
+    margin: 10px 0; /* Agrega un pequeño margen entre elementos */
+    padding: 10px;
+    border: 1px solid #ddd; /* Opcional: Añade un borde para separar los productos */
+    border-radius: 5px;
+    background-color: #fff; /* Fondo blanco para mejor visibilidad */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 🔹 Estilo para los botones */
+#cart-container button {
+    background-color: #d33;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#cart-container button:hover {
+    background-color: #b22;
+}
+
+/* 🔹 Estilos para alinear la cantidad a la derecha */
+#cart-container li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.cart-item-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.cart-item-content strong {
+    flex-grow: 1; /* Asegura que el título ocupe el máximo espacio disponible */
+}
+
+.cart-item-content .quantity {
+    margin-left: auto; /* Empuja la cantidad hacia la derecha */
+    padding-right: 15px; /* Espaciado entre la cantidad y el botón */
+}
+
+.cart-item-content button {
+    flex-shrink: 0; /* Evita que el botón cambie de tamaño */
+}
+
+
 /* Paginación */
 .pagination {
     margin-top: auto; /* Empuja la paginación hacia el final del contenido */
