@@ -1,5 +1,5 @@
 import mongoose from "mongoose"; 
-import Product from '../models/Product.js';
+import Product from '../daos/mongodb/models/Product.js';
 
 export const getProducts = async (req, res) => {
     try {

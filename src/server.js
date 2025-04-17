@@ -10,8 +10,12 @@ import { fileURLToPath } from "url";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import Product from "./models/Product.js";
-import connectDB from "./config/db.js"; // Conexión a MongoDB
+import Product from "./daos/mongodb/models/Product.js";
+import connectDB from "./daos/mongodb/connection.js"; // Conexión a MongoDB
+import sessionsRouter from './routes/sessions.router.js';
+import passport from './middlewares/passport-jwt.middleware.js';
+import cookieParser from "cookie-parser";
+
 
 // Conectar a MongoDB
 connectDB();
@@ -29,6 +33,10 @@ const hbs = exphbs.create({
 });
 
 const app = express();
+app.use(cookieParser());
+app.use(passport.initialize());
+
+
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
@@ -37,6 +45,8 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/api/sessions', sessionsRouter);
+
 
 // Configuración del puerto
 const PORT = process.env.PORT || 8080;

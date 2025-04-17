@@ -1,4 +1,4 @@
-# 🛒 Proyecto Final - Backend I - Gestión de Productos y Carritos
+# 🛒 Proyecto Final - Backend II - Gestión de Productos y Carritos + Autenticación de Users
 
 Este proyecto es una API desarrollada en **Node.js** y **Express** que permite gestionar productos y carritos de compras mediante diferentes endpoints. Se integra con **MongoDB** para la persistencia de datos, **Handlebars** para la visualización y **WebSockets** para la actualización en tiempo real.
 
@@ -104,10 +104,59 @@ El servidor estará disponible en: [http://localhost:8080](http://localhost:8080
 - `DELETE /api/carts/:cid/products/:pid` → Eliminar un producto del carrito.
 - `DELETE /api/carts/:cid` → Vaciar completamente el carrito.
 
+## 🔐 Autenticación de Usuarios con JWT + Passport
+
+Se agregó un sistema completo de autenticación y autorización de usuarios utilizando **JWT (JSON Web Tokens)**, **cookies HTTP-only**, y la estrategia `passport-jwt`.
+
+### 👤 Modelo de Usuario
+
+El modelo `User` incluye:
+
+- `first_name`: Nombre
+- `last_name`: Apellido
+- `email`: Único, obligatorio
+- `age`: Edad
+- `password`: Contraseña hasheada con `bcrypt`
+- `cart`: Referencia al carrito asociado
+- `role`: Por defecto `'user'`, pero puede ser `'admin'`
+
+### 🔐 Registro y Login
+
+- **`POST /api/sessions/register`**  
+  Crea un nuevo usuario. Genera automáticamente un carrito y guarda la contraseña encriptada.
+
+- **`POST /api/sessions/login`**  
+  Autentica al usuario.  
+  Devuelve un token JWT válido y lo almacena en una cookie `httpOnly`.
+
+### 🔒 Ruta Protegida: `/current`
+
+- **`GET /api/sessions/current`**  
+  Requiere que el usuario esté autenticado (token válido en la cookie o header).  
+  Devuelve los datos del usuario autenticado.
+
+### 🚪 Logout
+
+- **`POST /api/sessions/logout`**  
+  Borra la cookie con el token JWT. Invalida el acceso a rutas protegidas.
+
+### 🧠 Seguridad y Middleware
+
+- Se implementó `passport-jwt` para validar los tokens de forma automática.
+- Se utiliza un extractor combinado que acepta:
+  - **Header**: `Authorization: Bearer <token>`
+  - **Cookie**: `token` (automática al hacer login)
+- Si el token no es válido o no está presente, se devuelve `401 Unauthorized`.
+
+### 🧪 Flujo típico en Postman
+
+1. `POST /api/sessions/register` → Crear usuario.
+2. `POST /api/sessions/login` → Obtener token y cookie.
+3. `GET /api/sessions/current` → Ver datos del usuario (si está autenticado).
+4. `POST /api/sessions/logout` → Eliminar cookie y cerrar sesión.
+
 ## 📝 Notas adicionales
 
 - **No olvides configurar tu `.env` correctamente**.
 - **Asegúrate de tener MongoDB Atlas o una instancia local en funcionamiento**.
 - **Revisa los logs de consola para verificar la conexión a la base de datos**.
-
-¡Listo! Ahora puedes gestionar productos y carritos con un backend escalable y eficiente. 🚀

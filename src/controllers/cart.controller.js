@@ -1,5 +1,5 @@
-import Cart from "../models/Cart.js";
-import Product from "../models/Product.js";
+import Cart from "../daos/mongodb/models/Cart.js";
+import Product from "../daos/mongodb/models/Product.js";
 
 // ✅ CREAR UN NUEVO CARRITO VACÍO 
 export const createCart = async (req, res) => {
@@ -243,4 +243,3 @@ export const clearCart = async (req, res) => {
         res.status(500).json({ message: "Error al vaciar el carrito.", error });
     }
 };
-
