@@ -1,6 +1,6 @@
 # 🛒 Proyecto Final - Backend II - Gestión de Productos y Carritos + Autenticación de Users
 
-Este proyecto es una API desarrollada en **Node.js** y **Express** que permite gestionar productos y carritos de compras mediante diferentes endpoints. Se integra con **MongoDB** para la persistencia de datos, **Handlebars** para la visualización y **WebSockets** para la actualización en tiempo real.
+Este proyecto es una API desarrollada en **Node.js** y **Express** que permite gestionar productos y carritos de compras mediante diferentes endpoints. Se integra con **MongoDB** para la persistencia de datos, **Handlebars** para la visualización y **WebSockets** para la actualización en tiempo real. Y sumamos el agregado de autenticación de usuarios.
 
 ## 🚀 Características principales
 
