@@ -1,5 +1,5 @@
-import Cart from "../daos/mongodb/models/Cart.js";
-import Product from "../daos/mongodb/models/Product.js";
+import Cart from "../daos/mongodb/models/cart-model.js";
+import Product from "../daos/mongodb/models/product-model.js";
 
 // ✅ CREAR UN NUEVO CARRITO VACÍO 
 export const createCart = async (req, res) => {

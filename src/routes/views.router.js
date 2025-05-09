@@ -1,6 +1,6 @@
 import express from "express";
-import Product from "../daos/mongodb/models/Product.js";
-import Cart from "../daos/mongodb/models/Cart.js";
+import Product from "../daos/mongodb/models/product-model.js";
+import Cart from "../daos/mongodb/models/cart-model.js";
 
 const router = express.Router();
 

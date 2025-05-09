@@ -70,7 +70,7 @@ async function removeFromCart(cartId, productId) {
         });
 
         if (result.isConfirmed) {
-            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, { method: "DELETE" });
+            const response = await fetch(`/carts/${cartId}/products/${productId}`, { method: "DELETE" });
 
             if (!response.ok) throw new Error("Error al eliminar producto");
 
@@ -105,7 +105,7 @@ async function clearCart(cartId) {
         });
 
         if (result.isConfirmed) {
-            const response = await fetch(`/api/carts/${cartId}`, { method: "DELETE" });
+            const response = await fetch(`/carts/${cartId}`, { method: "DELETE" });
 
             if (!response.ok) throw new Error("Error al vaciar el carrito");
 

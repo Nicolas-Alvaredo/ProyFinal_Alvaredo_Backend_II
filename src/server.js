@@ -10,8 +10,10 @@ import { fileURLToPath } from "url";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import Product from "./daos/mongodb/models/Product.js";
-import connectDB from "./daos/mongodb/connection.js"; // Conexión a MongoDB
+import productsApiRouter from "./routes/api/products.api.router.js";
+import cartsApiRouter from "./routes/api/carts.api.router.js";
+import Product from "./daos/mongodb/models/product-model.js";
+import connectDB from "./daos/mongodb/mongo-dao.js"; // Conexión a MongoDB
 import sessionsRouter from './routes/sessions.router.js';
 import passport from './middlewares/passport-jwt.middleware.js';
 import cookieParser from "cookie-parser";
@@ -100,7 +102,12 @@ io.on("connection", async (socket) => {
     });
 });
 
-// Rutas
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use("/", viewsRouter);
+// 🔐 Rutas protegidas (JWT + roles)
+app.use("/api/products", productsApiRouter);
+app.use("/api/carts", cartsApiRouter);
+app.use("/api/sessions", sessionsRouter);
+
+// 🖼️ Rutas de vistas públicas
+app.use("/", viewsRouter);  
+app.use("/products", productsRouter);
+app.use("/carts", cartsRouter);

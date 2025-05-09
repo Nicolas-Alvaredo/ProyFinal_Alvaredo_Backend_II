@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import User from '../daos/mongodb/models/User.js';
+import User from '../daos/mongodb/models/user-model.js';
 
 const SECRET = process.env.JWT_SECRET;
 

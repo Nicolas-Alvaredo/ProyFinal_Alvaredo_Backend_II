@@ -68,7 +68,7 @@ async function addToCart(productId) {
     let cartId = localStorage.getItem("cartId");
 
     if (cartId) {
-        const cartResponse = await fetch(`/api/carts/${cartId}`);
+        const cartResponse = await fetch(`/carts/${cartId}`);
         if (cartResponse.status === 404) {
             console.warn("❌ Carrito en localStorage no existe en MongoDB, se creará uno nuevo.");
             localStorage.removeItem("cartId");
@@ -78,7 +78,7 @@ async function addToCart(productId) {
 
     if (!cartId) {
         try {
-            const response = await fetch(`/api/carts`, { method: "POST" });
+            const response = await fetch(`/carts`, { method: "POST" });
             if (!response.ok) throw new Error("Error al crear carrito");
 
             const cartData = await response.json();
@@ -93,7 +93,7 @@ async function addToCart(productId) {
     }
 
     try {
-        const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+        const response = await fetch(`/carts/${cartId}/products/${productId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ quantity: 1 })

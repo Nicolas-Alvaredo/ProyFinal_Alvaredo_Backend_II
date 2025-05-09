@@ -1,5 +1,5 @@
 import mongoose from "mongoose"; 
-import Product from '../daos/mongodb/models/Product.js';
+import Product from '../daos/mongodb/models/product-model.js';
 
 export const getProducts = async (req, res) => {
     try {
@@ -38,6 +38,21 @@ export const getProducts = async (req, res) => {
     }
 };
 
+export const getProductById = async (req, res) => {
+    try {
+      const { pid } = req.params;
+      const product = await Product.findById(pid);
+  
+      if (!product) {
+        return res.status(404).json({ message: "Producto no encontrado" });
+      }
+  
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
 
 export const addProduct = async (req, res) => {
     try {
