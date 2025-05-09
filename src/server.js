@@ -14,7 +14,7 @@ import productsApiRouter from "./routes/api/products.api.router.js";
 import cartsApiRouter from "./routes/api/carts.api.router.js";
 import Product from "./daos/mongodb/models/product-model.js";
 import connectDB from "./daos/mongodb/mongo-dao.js"; // Conexión a MongoDB
-import sessionsRouter from './routes/sessions.router.js';
+import sessionsRouter from './routes/api/sessions.router.js';
 import passport from './middlewares/passport-jwt.middleware.js';
 import cookieParser from "cookie-parser";
 

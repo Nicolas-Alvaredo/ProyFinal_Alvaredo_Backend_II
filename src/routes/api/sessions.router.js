@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { register, login, current, logout } from '../controllers/auth.controller.js';
-import passport from '../middlewares/passport-jwt.middleware.js'
+import { register, login, current, logout } from '../../controllers/auth.controller.js';
+import passport from '../../middlewares/passport-jwt.middleware.js'
 
 const router = Router();
 
