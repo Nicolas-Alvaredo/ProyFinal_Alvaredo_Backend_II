@@ -19,5 +19,9 @@ export const userRepository = {
   findById: async (id) => {
     const user = await userDao.getById(id);
     return new UserDTO(user);
+  },
+
+  findByIdWithPassword: async (id) => {
+    return await userDao.getByIdWithPassword(id);
   }
 };
