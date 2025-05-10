@@ -155,7 +155,7 @@ El modelo `User` incluye:
 3. `GET /api/sessions/current` → Ver datos del usuario (si está autenticado).
 4. `POST /api/sessions/logout` → Eliminar cookie y cerrar sesión.
 
-### Permisos según roles
+### 👮‍♂️ Permisos según roles
 
 - **Usuarios con rol** `admin` pueden:
 
