@@ -155,6 +155,34 @@ El modelo `User` incluye:
 3. `GET /api/sessions/current` → Ver datos del usuario (si está autenticado).
 4. `POST /api/sessions/logout` → Eliminar cookie y cerrar sesión.
 
+### Permisos según roles
+
+- **Usuarios con rol** `admin` pueden:
+
+  - Crear, actualizar o eliminar productos.
+
+- **Usuarios con rol** `user` pueden:
+
+  - Agregar productos al carrito.
+
+  - Ver su carrito y modificar cantidades.
+
+  - Realizar recuperación de contraseña.
+
+**Los middleware pueden validar el rol antes de permitir el acceso a rutas protegidas.**
+
+### 📬 Recuperación de Contraseña
+
+`POST /api/sessions/password-recovery`
+Envía un email al usuario con un token de recuperación válido por 1 hora.
+
+`PUT /api/sessions/reset-password`
+Cambia la contraseña del usuario.
+Requiere el token en el header:
+`Authorization: Bearer <token>`
+
+⚠️ No permite reutilizar la misma contraseña anterior.
+
 ## 📝 Notas adicionales
 
 - **No olvides configurar tu `.env` correctamente**.
