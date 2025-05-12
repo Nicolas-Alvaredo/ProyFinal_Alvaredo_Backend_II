@@ -1,4 +1,4 @@
-import MongoDao from './mongo-dao.js';
+import MongoDao from './base-dao.js'; 
 import Product from './models/product-model.js';
 
 class ProductDao extends MongoDao {

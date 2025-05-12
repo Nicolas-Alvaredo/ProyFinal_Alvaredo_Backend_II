@@ -107,6 +107,7 @@ app.use("/api/products", productsApiRouter);
 app.use("/api/carts", cartsApiRouter);
 app.use("/api/sessions", sessionsRouter);
 
+
 // 🖼️ Rutas de vistas públicas
 app.use("/", viewsRouter);  
 app.use("/products", productsRouter);

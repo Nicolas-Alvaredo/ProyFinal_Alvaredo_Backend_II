@@ -9,6 +9,7 @@ import {
   clearCart,
   getAllCarts
 } from "../../controllers/cart.controller.js";
+import { generateTicketFromCart } from "../../controllers/ticket.controller.js";
 import passport from "../../middlewares/passport-jwt.middleware.js";
 import { checkRole } from "../../middlewares/checkRole.js";
 
@@ -70,5 +71,8 @@ router.delete(
   checkRole("user"),
   clearCart
 );
+
+// ✅ Ruta para finalizar compra y generar ticket
+router.post("/:cid/purchase", passport.authenticate("jwt", { session: false }), checkRole("user"), generateTicketFromCart);
 
 export default router;
