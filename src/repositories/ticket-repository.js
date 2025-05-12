@@ -2,7 +2,6 @@ import { ticketDao } from '../daos/mongodb/ticket-dao.js';
 import { cartRepository } from './cart-repository.js';
 import { productRepository } from './product-repository.js';
 
-
 export const ticketRepository = {
   generate: async (user) => {
     const cart = await cartRepository.getPopulatedById(user.cart);
@@ -13,9 +12,15 @@ export const ticketRepository = {
     for (const item of cart.products) {
       const dbProduct = await productRepository.getById(item.product._id);
       if (!dbProduct) continue;
+
+      // ✅ Devolver el stock al producto
+      dbProduct.stock += item.quantity;
+      await dbProduct.save();
+
       amount += item.quantity * dbProduct.price;
     }
 
+    // ✅ Generar el ticket
     const ticket = await ticketDao.create({
       code: `TCKT-${Date.now()}`,
       purchase_datetime: new Date().toLocaleString(),
@@ -23,7 +28,7 @@ export const ticketRepository = {
       purchaser: user.email
     });
 
-    cart.products = []; // vacía el carrito post-compra
+    // ✅ Vaciar el carrito
     await cartRepository.update(cart._id, { products: [] });
 
     return ticket;

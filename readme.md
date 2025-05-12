@@ -1,6 +1,13 @@
 # 🛒 Proyecto Final - Backend II - Gestión de Productos y Carritos + Autenticación de Users
 
-Este proyecto es una API desarrollada en **Node.js** y **Express** que permite gestionar productos y carritos de compras mediante diferentes endpoints. Se integra con **MongoDB** para la persistencia de datos, **Handlebars** para la visualización y **WebSockets** para la actualización en tiempo real. Y sumamos el agregado de autenticación de usuarios.
+Este proyecto es una API desarrollada en **Node.js** y **Express** que permite gestionar productos y carritos de compras mediante diferentes endpoints.
+
+- Se integra con **MongoDB** para la persistencia de datos
+- **Handlebars** para la visualización
+- **WebSockets** para la actualización en tiempo real.
+- Posee **autenticación de usuarios** para diferenciar Admin de Users
+- **Servicio de email** para bienvenida durante el registro y recupero de contraseña
+- **Purchase con ticket** para finalizar la compra
 
 ## 🚀 Características principales
 
@@ -182,6 +189,42 @@ Requiere el token en el header:
 `Authorization: Bearer <token>`
 
 ⚠️ No permite reutilizar la misma contraseña anterior.
+
+### 🎟️ Finalizar Compra con Ticket
+
+El endpoint `POST /api/carts/:cid/purchase` permite a un **usuario autenticado** realizar la compra de los productos en su carrito.
+
+#### ✅ Lógica de Compra
+
+- Se genera un **ticket** con los datos de la transacción.
+
+- Se calcula el `amount` (monto total) basado en el precio y cantidad de los productos.
+
+- El carrito se vacía después de la compra.
+
+- Se restablece el stock original de los productos, ya que se había descontado previamente al agregarlos al carrito.
+
+- Se retorna el ticket generado en formato JSON.
+
+#### 📁 Formato del Ticket
+
+El ticket queda registrado en la colección de MongoDB y tiene la siguiente estructura:
+
+- `_id`: ID del documento en MongoDB.
+
+- `code`: Código único generado automáticamente (`TCKT-<timestamp>`).
+
+- `purchase_datetime`: Fecha y hora exacta de la compra.
+
+- `amount`: Monto total de la compra en pesos.
+
+- `purchaser`: Correo electrónico del usuario comprador.
+
+#### 🔒 Seguridad
+
+- Solo usuarios con rol user pueden realizar compras.
+
+- La ruta está protegida por JWT y validación de rol.
 
 ## 📝 Notas adicionales
 
