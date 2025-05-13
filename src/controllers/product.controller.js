@@ -1,5 +1,7 @@
 import mongoose from "mongoose"; 
 import Product from '../daos/mongodb/models/product-model.js';
+import { productRepository } from '../repositories/product-repository.js';
+
 
 export const getProducts = async (req, res) => {
     try {
@@ -63,6 +65,23 @@ export const addProduct = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+export const updateProduct = async (req, res) => {
+    try {
+      const { pid } = req.params;
+      const data = req.body;
+      const updatedProduct = await productRepository.update(pid, data);
+  
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Producto no encontrado" });
+      }
+  
+      res.json({ message: "Producto actualizado correctamente", product: updatedProduct });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
 
 export const deleteProduct = async (req, res) => {
     try {

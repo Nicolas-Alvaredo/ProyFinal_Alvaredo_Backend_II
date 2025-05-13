@@ -10,13 +10,21 @@ const router = express.Router();
 router.get("/", productController.getProducts);
 router.get("/:pid", productController.getProductById);
 
-// Solo admin puede crear y eliminar productos
+// Solo admin puede crear, actualizar y eliminar productos
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   checkRole("admin"),
   productController.addProduct
 );
+
+router.put(
+    "/:pid",
+    passport.authenticate("jwt", { session: false }),
+    checkRole("admin"),
+    productController.updateProduct
+  );
+  
 
 router.delete(
   "/:pid",
