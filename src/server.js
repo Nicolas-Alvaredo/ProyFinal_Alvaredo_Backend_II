@@ -51,7 +51,7 @@ app.use('/api/sessions', sessionsRouter);
 
 
 // Configuración del puerto
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const httpServer = app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en: http://localhost:${PORT}`);
 });
